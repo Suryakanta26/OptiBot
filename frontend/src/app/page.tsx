@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import MarkdownContent from "@/components/MarkdownContent";
 import { getSampleOrders, sendChat } from "@/lib/api";
 import type { ChatResponse, Mode, TraceStep } from "@/lib/types";
 
@@ -138,7 +139,11 @@ export default function ChatPage() {
                   turn.isError ? "error" : turn.mode ?? ""
                 }`}
               >
-                <div style={{ whiteSpace: "pre-wrap" }}>{turn.text}</div>
+                {turn.role === "user" || turn.isError ? (
+                  <div style={{ whiteSpace: "pre-wrap" }}>{turn.text}</div>
+                ) : (
+                  <MarkdownContent content={turn.text} />
+                )}
                 {turn.result && !turn.isError && (
                   <div className="msg-meta">
                     <span className="pill">{turn.result.metrics.model ?? "—"}</span>
