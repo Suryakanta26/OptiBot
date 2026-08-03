@@ -77,7 +77,7 @@ export default function DashboardPage() {
     <>
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <div>
-          <h1 className="page-title">Monitoring dashboard</h1>
+          <h1 className="page-title">Monitoring Dashboard</h1>
           <p className="page-sub">
             Live metrics from every request. Refreshes every 5 seconds.
           </p>

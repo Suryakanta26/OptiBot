@@ -230,7 +230,7 @@ export default function SettingsPanel({ onClose, onSaved }: Props) {
         <header className="modal-head">
           <div className="modal-title">
             <h2 id="llm-settings-title">
-              <GearIcon size={17} /> LiteLLM gateway
+              <GearIcon size={17} /> LiteLLM Gateway
             </h2>
             <p>
               Models, providers and routing live on the gateway. OptiBot only

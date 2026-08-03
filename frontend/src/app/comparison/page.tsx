@@ -141,7 +141,7 @@ export default function ComparisonPage() {
 
   return (
     <>
-      <h1 className="page-title">Before / after comparison</h1>
+      <h1 className="page-title">Baseline vs Optimized Comparison</h1>
       <p className="page-sub">
         Mapped to the evaluation lenses. Numbers are computed from{" "}
         {b.requests} baseline and {o.requests} optimized requests in this run.

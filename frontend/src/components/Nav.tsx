@@ -11,7 +11,7 @@ import SettingsPanel from "./SettingsPanel";
 const LINKS = [
   { href: "/", label: "Chat" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/comparison", label: "Before / After" },
+  { href: "/comparison", label: "Baseline / Optimized" },
   { href: "/governance", label: "Governance" },
 ];
 

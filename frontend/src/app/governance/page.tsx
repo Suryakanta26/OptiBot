@@ -40,7 +40,7 @@ export default function GovernancePage() {
 
   return (
     <>
-      <h1 className="page-title">Governance & audit</h1>
+      <h1 className="page-title">Governance & Audit</h1>
       <p className="page-sub">
         Every interaction is written to an append-only audit log. Optimized-mode
         rows are PII-masked at write time; baseline rows deliberately are not,

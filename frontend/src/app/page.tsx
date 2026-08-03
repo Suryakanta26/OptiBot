@@ -95,7 +95,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <h1 className="page-title">Order tracking assistant</h1>
+      <h1 className="page-title">Order Tracking Assistant</h1>
       <p className="page-sub">
         Same question, same data — flip the toggle to switch between the
         unoptimized baseline pipeline and the optimized one.
