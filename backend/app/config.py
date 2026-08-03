@@ -91,6 +91,7 @@ class Settings:
     cache_ttl_order: int = int(os.getenv("OPTIBOT_CACHE_TTL_ORDER", "300"))
     cache_ttl_policy: int = int(os.getenv("OPTIBOT_CACHE_TTL_POLICY", "1800"))
     cache_max_entries: int = 500
+    semantic_cache_backend: str = os.getenv("OPTIBOT_SEMANTIC_CACHE_BACKEND", "local")
 
     # --- RAG -------------------------------------------------------------
     rag_top_k: int = int(os.getenv("OPTIBOT_RAG_TOP_K", "3"))

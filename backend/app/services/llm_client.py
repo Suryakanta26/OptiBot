@@ -20,8 +20,11 @@ import json
 import re
 from dataclasses import dataclass
 
+from langchain_core.messages import HumanMessage, SystemMessage
+
 from app import llm_settings
 from app.services import gateway  # noqa: F401 - importing it runs the TLS bootstrap
+from app.services.langchain_model import GatewayChatModel
 
 # USD per 1M tokens (input, output).
 PRICING: dict[str, tuple[float, float]] = {
@@ -140,26 +143,38 @@ def complete(
     messages: list[dict],
     max_tokens: int,
 ) -> LLMResult:
-    payload = [{"role": "system", "content": system}, *messages]
+    langchain_messages = [SystemMessage(content=system)]
+    for message in messages:
+        # Optimized history currently contains user/assistant turns only.
+        if message.get("role") == "assistant":
+            from langchain_core.messages import AIMessage
+
+            langchain_messages.append(AIMessage(content=message.get("content", "")))
+        else:
+            langchain_messages.append(HumanMessage(content=message.get("content", "")))
     try:
-        result = gateway.chat(model=model, messages=payload, max_tokens=max_tokens)
+        response = GatewayChatModel(model=model, max_tokens=max_tokens).invoke(langchain_messages)
     except gateway.GatewayError as exc:
         # LLMError stays the only exception type crossing into chat_service, so
         # its two handlers (and the audit trail they write) keep working.
         raise LLMError(str(exc)) from exc
 
+    usage = response.usage_metadata or {}
+    metadata = response.response_metadata or {}
+    input_tokens = int(usage.get("input_tokens", 0) or 0)
+    output_tokens = int(usage.get("output_tokens", 0) or 0)
     cost_usd, cost_basis = resolve_cost(
-        model, result.input_tokens, result.output_tokens, result.reported_cost_usd
+        model, input_tokens, output_tokens, metadata.get("reported_cost_usd")
     )
 
     return LLMResult(
-        text=result.text,
+        text=str(response.content),
         model=model,
-        input_tokens=result.input_tokens,
-        output_tokens=result.output_tokens,
-        latency_ms=result.latency_ms,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        latency_ms=int(metadata.get("latency_ms", 0) or 0),
         cost_usd=cost_usd,
-        stop_reason=result.stop_reason,
+        stop_reason=metadata.get("stop_reason"),
         cost_basis=cost_basis,
     )
 

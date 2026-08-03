@@ -90,6 +90,7 @@ def build_optimized_messages(
     policy_chunks: list[dict],
     *,
     should_escalate: bool,
+    chat_history: list[dict] | None = None,
 ) -> tuple[str, list[dict]]:
     """Assemble the optimized prompt.
 
@@ -111,4 +112,6 @@ def build_optimized_messages(
         sections.append("Policy Context:\n" + rendered)
 
     sections.append(f"Customer: {query}")
-    return system, [{"role": "user", "content": "\n\n".join(sections)}]
+    messages = list(chat_history or [])
+    messages.append({"role": "user", "content": "\n\n".join(sections)})
+    return system, messages

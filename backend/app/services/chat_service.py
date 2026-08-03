@@ -18,12 +18,17 @@ optimized
 from __future__ import annotations
 
 import time
+from typing import Any
+
+from langchain_core.messages import AIMessage, HumanMessage
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.graph import END, START, MessagesState, StateGraph
 
 from app.config import settings
 from app.models.schemas import ChatMetrics, ChatResponse, TraceStep
 from app.services import guardrails, llm_client, metrics_service, order_service
 from app.services import pii_detector, prompts, rag_service
-from app.services.cache_service import semantic_cache
+from app.services.cache_service import build_identity, semantic_cache
 from app.services.classifier import classify
 
 
@@ -160,7 +165,11 @@ def _run_baseline(query: str, session_id: str) -> ChatResponse:
 # Optimized
 # --------------------------------------------------------------------------
 
-def _run_optimized(query: str, session_id: str) -> ChatResponse:
+def _run_optimized(
+    query: str,
+    session_id: str,
+    chat_history: list[dict] | None = None,
+) -> ChatResponse:
     timer = _Timer()
     metrics = ChatMetrics(mode="optimized")
 
@@ -222,14 +231,33 @@ def _run_optimized(query: str, session_id: str) -> ChatResponse:
             f"{len(policy_chunks)} chunk(s) from {', '.join(metrics.rag_sources) or 'no match'}",
         )
 
-    # --- Layer 4: semantic cache ---------------------------------------
-    context_key = semantic_cache.context_key(resolved_ids, metrics.rag_sources)
+    # A complete policy question is grounded entirely by the retrieved policy
+    # chunks. Letting unrelated thread history affect its prompt would also
+    # make the cache identity change on every turn. Follow-ups and order turns
+    # still retain history because their meaning can depend on prior messages.
+    effective_history = (
+        None
+        if cls.tier == "medium" and cls.needs_rag and not cls.needs_order_data
+        else chat_history
+    )
+
+    # --- Layer 4: exact cache, then semantic policy cache ---------------
+    cache_identity = build_identity(
+        query=query,
+        tier=cls.tier,
+        order_contexts=order_contexts,
+        policy_chunks=policy_chunks,
+        conversation_context=effective_history,
+    )
     if cls.is_cacheable:
-        lookup = semantic_cache.lookup(query, context_key)
+        lookup = semantic_cache.lookup_identity(cache_identity)
         metrics.cache_similarity = lookup.similarity
         if lookup.hit and lookup.entry is not None:
             entry = lookup.entry
             metrics.cache_hit = True
+            metrics.cache_level = lookup.level
+            metrics.cache_entry_age_ms = lookup.age_ms
+            metrics.model = "cache"
             metrics.confidence = entry.confidence
             metrics.latency_ms = int((time.perf_counter() - timer._mark) * 1000)
             timer.step("cache", f"HIT (similarity {lookup.similarity}) — no model call")
@@ -266,7 +294,11 @@ def _run_optimized(query: str, session_id: str) -> ChatResponse:
 
     # --- Layer 2 + 1b: compressed prompt, routed model ------------------
     system, messages = prompts.build_optimized_messages(
-        query, order_contexts, policy_chunks, should_escalate=cls.should_escalate
+        query,
+        order_contexts,
+        policy_chunks,
+        should_escalate=cls.should_escalate,
+        chat_history=effective_history,
     )
     model = llm_client.select_model("optimized", cls.tier)
     timer.step("routing", f"tier '{cls.tier}' -> {model}")
@@ -324,8 +356,12 @@ def _run_optimized(query: str, session_id: str) -> ChatResponse:
     # Only cache answers that survived validation. Caching a response that
     # tripped a guardrail would serve the same bad answer repeatedly.
     if cls.is_cacheable and not out.triggers and confidence >= settings.low_confidence_threshold:
-        semantic_cache.store(query, answer, confidence, sources, context_key, cls.tier)
-        timer.step("cache", "response stored for reuse")
+        semantic_cache.store_identity(cache_identity, answer, confidence, sources)
+        timer.step(
+            "cache",
+            "response stored in exact cache"
+            + (" + semantic policy cache" if cache_identity.semantic_allowed else ""),
+        )
 
     # --- Layer 5c: PII masking before anything is persisted -------------
     masked_q = pii_detector.mask(query)
@@ -362,6 +398,54 @@ def _run_optimized(query: str, session_id: str) -> ChatResponse:
     )
 
 
+class OptimizedState(MessagesState):
+    """Serializable state checkpointed independently for each chat session."""
+
+    current_query: str
+    session_id: str
+    response: ChatResponse
+
+
+def _message_history(messages: list[Any]) -> list[dict]:
+    history: list[dict] = []
+    # The final HumanMessage is the current request; only earlier messages are
+    # injected as history. Bound the context even though the checkpointer keeps
+    # the complete thread for future summarization/persistence upgrades.
+    for message in messages[:-1][-8:]:
+        role = "assistant" if isinstance(message, AIMessage) else "user"
+        history.append({"role": role, "content": str(message.content)})
+    return history
+
+
+def _execute_optimized(state: OptimizedState) -> dict:
+    response = _run_optimized(
+        state["current_query"],
+        state["session_id"],
+        chat_history=_message_history(state["messages"]),
+    )
+    # Only masked content is checkpointed. The unmasked response remains in the
+    # request-scoped response field returned to FastAPI.
+    checkpointed = pii_detector.mask(response.response).text
+    return {"messages": [AIMessage(content=checkpointed)], "response": response}
+
+
+_workflow_builder = StateGraph(OptimizedState)
+_workflow_builder.add_node("optimized_pipeline", _execute_optimized)
+_workflow_builder.add_edge(START, "optimized_pipeline")
+_workflow_builder.add_edge("optimized_pipeline", END)
+optimized_workflow = _workflow_builder.compile(checkpointer=InMemorySaver())
+
+
 def handle(query: str, session_id: str, mode: str) -> ChatResponse:
-    return _run_baseline(query, session_id) if mode == "baseline" \
-        else _run_optimized(query, session_id)
+    if mode == "baseline":
+        return _run_baseline(query, session_id)
+    masked_query = pii_detector.mask(query).text
+    result = optimized_workflow.invoke(
+        {
+            "messages": [HumanMessage(content=masked_query)],
+            "current_query": query,
+            "session_id": session_id,
+        },
+        config={"configurable": {"thread_id": session_id}},
+    )
+    return result["response"]

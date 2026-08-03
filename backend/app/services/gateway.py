@@ -415,9 +415,14 @@ def describe_error(
             "on the gateway itself — OptiBot never holds provider keys."
         )
 
-    if isinstance(exc, (exceptions.APIConnectionError, exceptions.Timeout)) or (
-        "connection error" in low or "timed out" in low or "timeout" in low
-    ):
+    if isinstance(exc, exceptions.Timeout) or "timed out" in low or "timeout" in low:
+        return (
+            f"Model '{model}' at {base} did not finish within "
+            f"{settings.litellm_timeout_s:g} seconds. The gateway is reachable; try a "
+            "faster/non-reasoning model or increase LITELLM_TIMEOUT_S."
+        )
+
+    if isinstance(exc, exceptions.APIConnectionError) or "connection error" in low:
         detail = probe(base) if diagnose_connection else None
         suffix = f" Probe says: {detail}." if detail else ""
         return (

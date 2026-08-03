@@ -31,7 +31,9 @@ class ChatMetrics(BaseModel):
     latency_ms: int = 0
     cost_usd: float = 0.0
     cache_hit: bool = False
+    cache_level: Literal["none", "exact", "semantic"] = "none"
     cache_similarity: float = 0.0
+    cache_entry_age_ms: int = 0
     rag_used: bool = False
     rag_sources: list[str] = Field(default_factory=list)
     confidence: float = 0.0

@@ -21,6 +21,7 @@ import re
 import threading
 
 import numpy as np
+from langchain_core.embeddings import Embeddings
 
 _DIM_FALLBACK = 512
 _MODEL_NAME = "all-MiniLM-L6-v2"
@@ -158,3 +159,13 @@ def cosine(a: np.ndarray, b: np.ndarray) -> float:
 
 def backend_name() -> str:
     return get_embedder().name
+
+
+class OptiBotEmbeddings(Embeddings):
+    """LangChain embedding adapter over the app's local/fallback backend."""
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        return embed(texts).tolist()
+
+    def embed_query(self, text: str) -> list[float]:
+        return embed_one(text).tolist()

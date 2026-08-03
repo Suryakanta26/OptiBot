@@ -110,9 +110,16 @@ def check_input(query: str, session_id: str) -> InputVerdict:
         )
 
     if _ABUSE_RE.search(text):
-        # Not blocking — a frustrated customer still deserves an answer. The
-        # event is recorded so the tone can be reviewed later.
-        triggers.append("abusive_language")
+        # This is a terminal verdict: the orchestrator returns it before any
+        # classification, retrieval, caching, or model invocation.
+        return InputVerdict(
+            False,
+            text,
+            ["abusive_language"],
+            "I can help with ShopFast orders, returns, shipping, and warranty "
+            "questions, but I can't process abusive messages. Please rephrase "
+            "your request respectfully.",
+        )
 
     if len(text) > settings.max_input_chars:
         text = text[: settings.max_input_chars]
