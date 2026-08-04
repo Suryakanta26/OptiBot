@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1030" viewBox="0 0 1600 1030" role="img" aria-labelledby="title desc">
+  <title id="title">OptiBot Architecture — Baseline versus Optimized GenAI Workflow</title>
+  <desc id="desc">Architecture diagram with separate chat, configuration, and governance data flows.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#eef6fb"/></linearGradient>
+    <linearGradient id="opt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2fdff"/><stop offset="1" stop-color="#dff4f8"/></linearGradient>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf7"/><stop offset="1" stop-color="#ffece5"/></linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#f5f9fc"/></linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf9ff"/><stop offset="1" stop-color="#f0eaff"/></linearGradient>
+    <linearGradient id="tealBadge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08a4b7"/><stop offset="1" stop-color="#047a90"/></linearGradient>
+    <linearGradient id="coralBadge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff8064"/><stop offset="1" stop-color="#e34d35"/></linearGradient>
+    <linearGradient id="purpleBadge" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8762d0"/><stop offset="1" stop-color="#5b37a3"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="9" flood-color="#15345b" flood-opacity=".14"/></filter>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#15345b" flood-opacity=".12"/></filter>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#dce8f1" stroke-width="1" opacity=".35"/></pattern>
+    <marker id="navyArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#143b63"/></marker>
+    <marker id="coralArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#ef6548"/></marker>
+    <marker id="tealArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#05879a"/></marker>
+    <marker id="greenArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#26964a"/></marker>
+    <marker id="purpleArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#6d47b8"/></marker>
+    <style>
+      .title{font:700 42px Inter,Segoe UI,sans-serif;fill:#102e62}.subtitle{font:500 22px Inter,Segoe UI,sans-serif;fill:#294765}
+      .h2{font:700 21px Inter,Segoe UI,sans-serif;fill:#102e62}.lane{font:800 21px Inter,Segoe UI,sans-serif}.label{font:600 14px Inter,Segoe UI,sans-serif;fill:#163654}.small{font:500 12px Inter,Segoe UI,sans-serif;fill:#466079}.tiny{font:600 11px Inter,Segoe UI,sans-serif;fill:#466079}
+      .panel{fill:#fff;stroke:#143b63;stroke-width:2}.card{fill:url(#cardGrad);stroke:#9bb2c5;stroke-width:1.5;filter:url(#cardShadow)}.tealCard{fill:url(#cardGrad);stroke:#05879a;stroke-width:1.7;filter:url(#cardShadow)}.purpleCard{fill:url(#purpleGrad);stroke:#6d47b8;stroke-width:1.7;filter:url(#cardShadow)}.greenCard{fill:#f2fff4;stroke:#26964a;stroke-width:1.7;filter:url(#cardShadow)}.coralCard{fill:url(#cardGrad);stroke:#ef6548;stroke-width:1.7;filter:url(#cardShadow)}
+      .navyLine{fill:none;stroke:#143b63;stroke-width:2.3;marker-end:url(#navyArrow)}.tealLine{fill:none;stroke:#05879a;stroke-width:2.3;marker-end:url(#tealArrow)}.coralLine{fill:none;stroke:#ef6548;stroke-width:2.3;marker-end:url(#coralArrow)}.greenLine{fill:none;stroke:#26964a;stroke-width:2.5;marker-end:url(#greenArrow)}.purpleLine{fill:none;stroke:#6d47b8;stroke-width:2.5;marker-end:url(#purpleArrow)}.purpleBiLine{fill:none;stroke:#6d47b8;stroke-width:2.5;marker-start:url(#purpleArrow);marker-end:url(#purpleArrow)}.auditLine{fill:none;stroke:#ef6548;stroke-width:2.1;stroke-dasharray:7 5;marker-end:url(#coralArrow)}.configLine{fill:none;stroke:#6d47b8;stroke-width:2.2;stroke-dasharray:7 5;marker-end:url(#purpleArrow)}
+    </style>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg)"/><rect width="1600" height="1000" fill="url(#grid)"/>
+  <circle cx="1495" cy="62" r="105" fill="#dff4f8" opacity=".55"/>
+  <text x="800" y="58" text-anchor="middle" class="title">OptiBot Architecture</text>
+  <text x="800" y="89" text-anchor="middle" class="subtitle">Baseline vs Optimized GenAI Workflow</text>
+
+  <!-- Customer browser -->
+  <rect x="28" y="125" width="220" height="610" rx="20" class="panel" filter="url(#shadow)"/><rect x="28" y="125" width="8" height="610" rx="4" fill="url(#purpleBadge)"/>
+  <text x="138" y="159" text-anchor="middle" class="h2">Customer Browser</text>
+  <rect x="48" y="182" width="180" height="90" rx="13" class="card"/><circle cx="75" cy="209" r="16" fill="url(#tealBadge)"/><path d="M67 203h16v10H73l-5 5v-15z" fill="none" stroke="#fff" stroke-width="2"/><text x="157" y="207" text-anchor="middle" class="label"><tspan x="157">React + Next.js</tspan><tspan x="157" dy="18">Chat UI</tspan></text><text x="157" y="251" text-anchor="middle" class="small">Customer messages</text>
+  <rect x="48" y="292" width="180" height="90" rx="13" class="card"/><circle cx="75" cy="319" r="16" fill="url(#purpleBadge)"/><path d="M67 328v-8h4v8m3 0v-14h4v14m3 0v-19h4v19" fill="none" stroke="#fff" stroke-width="2"/><text x="151" y="328" text-anchor="middle" class="label">Dashboard</text><text x="151" y="352" text-anchor="middle" class="small">Metrics &amp; governance</text>
+  <rect x="48" y="402" width="180" height="100" rx="13" class="card"/><rect x="58" y="420" width="38" height="20" rx="10" fill="#ef6548"/><path d="M77 420h9a10 10 0 0 1 10 10 10 10 0 0 1-10 10h-9z" fill="#05879a"/><circle cx="77" cy="430" r="8" fill="#fff" stroke="#d8e3eb" stroke-width="1.2"/><text x="158" y="425" text-anchor="middle" class="label"><tspan x="158">Baseline /</tspan><tspan x="158" dy="19">Optimized</tspan></text><text x="158" y="475" text-anchor="middle" class="small">mode toggle</text>
+  <rect x="48" y="532" width="180" height="90" rx="13" class="purpleCard"/><circle cx="75" cy="559" r="16" fill="url(#purpleBadge)"/><path d="M75 549v20m-10-10h20" stroke="#fff" stroke-width="2"/><circle cx="75" cy="559" r="5" fill="none" stroke="#fff" stroke-width="2"/><text x="151" y="569" text-anchor="middle" class="label">Settings</text><text x="151" y="593" text-anchor="middle" class="small">Gateway &amp; model slots</text>
+
+  <!-- Backend boundary and API entry -->
+  <rect x="280" y="112" width="1288" height="860" rx="24" class="panel" filter="url(#shadow)"/><rect x="280" y="112" width="1288" height="10" rx="5" fill="url(#tealBadge)"/>
+  <circle cx="316" cy="149" r="18" fill="url(#tealBadge)"/><path d="M319 135l-11 16h8l-3 12 12-18h-8z" fill="#fff"/><text x="346" y="156" class="h2">FastAPI Backend</text>
+  <rect x="305" y="190" width="115" height="75" rx="12" class="card"/><text x="362" y="220" text-anchor="middle" class="label">POST /api/chat</text><text x="362" y="244" text-anchor="middle" class="small">Pydantic schemas</text>
+  <path d="M228 227H305" class="navyLine"/>
+
+  <!-- Baseline lane -->
+  <rect x="446" y="166" width="1088" height="145" rx="18" fill="url(#base)" stroke="#ef6548" stroke-width="2" filter="url(#cardShadow)"/><rect x="446" y="166" width="9" height="145" rx="4" fill="url(#coralBadge)"/>
+  <text x="990" y="196" text-anchor="middle" class="lane" fill="#ef6548">BASELINE</text>
+  <g>
+    <rect x="480" y="215" width="150" height="60" rx="11" class="coralCard"/><text x="555" y="250" text-anchor="middle" class="label">Rate limit</text>
+    <rect x="670" y="215" width="150" height="60" rx="11" class="coralCard"/><text x="745" y="241" text-anchor="middle" class="label">Full order record</text><text x="745" y="260" text-anchor="middle" class="tiny">including PII</text>
+    <rect x="860" y="215" width="150" height="60" rx="11" class="coralCard"/><text x="935" y="241" text-anchor="middle" class="label">Verbose prompt</text><text x="935" y="260" text-anchor="middle" class="tiny">no RAG</text>
+    <rect x="1050" y="215" width="150" height="60" rx="11" class="coralCard"/><text x="1125" y="241" text-anchor="middle" class="label">Single strong model</text><text x="1125" y="260" text-anchor="middle" class="tiny">every query</text>
+    <rect x="1240" y="215" width="160" height="60" rx="11" class="coralCard"/><text x="1320" y="241" text-anchor="middle" class="label">Unvalidated response</text><text x="1320" y="260" text-anchor="middle" class="tiny">raw audit data</text>
+    <g transform="translate(60 -13)"><circle cx="495" cy="228" r="9" fill="url(#coralBadge)"/><path d="M495 222v6l4 3" fill="none" stroke="#fff" stroke-width="1.5"/></g>
+    <g transform="translate(60 -13)"><circle cx="685" cy="228" r="9" fill="url(#coralBadge)"/><path d="M680 222h8v12h-8zm2 4h4m-4 3h4" fill="none" stroke="#fff" stroke-width="1.3"/></g>
+    <g transform="translate(60 -13)"><circle cx="875" cy="228" r="9" fill="url(#coralBadge)"/><circle cx="871" cy="228" r="1.4" fill="#fff"/><circle cx="875" cy="228" r="1.4" fill="#fff"/><circle cx="879" cy="228" r="1.4" fill="#fff"/></g>
+    <g transform="translate(60 -13)"><circle cx="1065" cy="228" r="9" fill="url(#coralBadge)"/><path d="M1060 228h10m-5-5v10" stroke="#fff" stroke-width="1.4"/></g>
+    <g transform="translate(65 -13)"><circle cx="1255" cy="228" r="9" fill="url(#coralBadge)"/><path d="M1255 221l7 13h-14z" fill="none" stroke="#fff" stroke-width="1.3"/><path d="M1255 225v4m0 2v1" stroke="#fff" stroke-width="1.3"/></g>
+    <path d="M420 227H446V245H480M630 245H670M820 245H860M1010 245H1050M1200 245H1240" class="coralLine"/>
+  </g>
+
+  <!-- Optimized lane -->
+  <rect x="430" y="330" width="1104" height="390" rx="18" fill="url(#opt)" stroke="#05879a" stroke-width="2" filter="url(#cardShadow)"/><rect x="430" y="330" width="9" height="390" rx="4" fill="url(#tealBadge)"/>
+  <text x="982" y="362" text-anchor="middle" class="lane" fill="#05879a">OPTIMIZED</text>
+  <rect x="458" y="390" width="125" height="70" rx="11" class="tealCard"/><text x="520" y="418" text-anchor="middle" class="label">LangGraph</text><text x="520" y="439" text-anchor="middle" class="small" textLength="108" lengthAdjust="spacingAndGlyphs">workflow orchestration</text>
+  <rect x="613" y="390" width="125" height="70" rx="11" class="tealCard"/><text x="675" y="418" text-anchor="middle" class="label">Input guardrails</text><text x="675" y="439" text-anchor="middle" class="small">pre-LLM block</text>
+  <rect x="768" y="390" width="125" height="70" rx="11" class="tealCard"/><text x="830" y="418" text-anchor="middle" class="label">Rule-based</text><text x="830" y="439" text-anchor="middle" class="small">classifier</text>
+  <rect x="923" y="378" width="160" height="95" rx="11" class="tealCard"/><text x="1003" y="401" text-anchor="middle" class="label">Grounding (pre-LLM)</text><text x="1003" y="427" text-anchor="middle" class="small">Order JSON data</text><text x="1003" y="451" text-anchor="middle" class="small">Policy RAG retrieval</text>
+  <rect x="1113" y="378" width="145" height="95" rx="11" class="tealCard"/><text x="1185" y="406" text-anchor="middle" class="label">Exact TTL cache</text><text x="1185" y="432" text-anchor="middle" class="small">then semantic</text><text x="1185" y="452" text-anchor="middle" class="small">policy cache</text>
+  <rect x="1300" y="383" width="175" height="70" rx="11" class="greenCard"/><text x="1387" y="411" text-anchor="middle" class="label" fill="#26964a">CACHE HIT</text><text x="1387" y="434" text-anchor="middle" class="small">0 tokens / no LLM call</text>
+  <g transform="translate(48 -14)"><circle cx="472" cy="404" r="9" fill="url(#tealBadge)"/><path d="M466 404h12m-6-6v12" stroke="#fff" stroke-width="1.5"/></g>
+  <g transform="translate(48 -14)"><circle cx="627" cy="404" r="9" fill="url(#tealBadge)"/><path d="M627 397l7 3v5c0 5-7 8-7 8s-7-3-7-8v-5z" fill="none" stroke="#fff" stroke-width="1.4"/></g>
+  <g transform="translate(48 -14)"><circle cx="782" cy="404" r="9" fill="url(#tealBadge)"/><path d="M776 399h12m-12 5h9m-9 5h6" stroke="#fff" stroke-width="1.5"/></g>
+  <g transform="translate(66 -14)"><circle cx="937" cy="392" r="9" fill="url(#tealBadge)"/><path d="M932 388h10v8h-10zm2 10h6" fill="none" stroke="#fff" stroke-width="1.3"/></g>
+  <g transform="translate(58 -14)"><circle cx="1127" cy="392" r="9" fill="url(#tealBadge)"/><circle cx="1127" cy="392" r="5" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M1127 387v5l3 2" stroke="#fff" stroke-width="1.3"/></g>
+  <g transform="translate(71 -14)"><circle cx="1316" cy="397" r="9" fill="#26964a"/><path d="M1310 397l4 4 8-9" fill="none" stroke="#fff" stroke-width="1.8"/></g>
+  <path d="M420 245V350H445V425H458M583 425H613M738 425H768M893 425H923M1083 425H1113" class="tealLine"/>
+  <path d="M1258 415H1300" class="greenLine"/>
+  <path d="M675 460V492H600V650" class="tealLine"/><text x="608" y="486" class="tiny" fill="#05879a">BLOCKED</text>
+
+  <!-- Miss / model call / validated response -->
+  <rect x="650" y="525" width="170" height="85" rx="11" class="tealCard"/><text x="735" y="551" text-anchor="middle" class="label">Model router</text><text x="735" y="574" text-anchor="middle" class="small">Simple → fast model</text><text x="735" y="595" text-anchor="middle" class="small">Medium/Complex → strong</text>
+  <rect x="850" y="525" width="150" height="85" rx="11" class="tealCard"/><text x="925" y="551" text-anchor="middle" class="label">Compressed</text><text x="925" y="574" text-anchor="middle" class="small">structured prompt</text>
+  <rect x="1030" y="525" width="135" height="85" rx="11" class="tealCard"/><text x="1097" y="551" text-anchor="middle" class="label">LangChain</text><text x="1097" y="574" text-anchor="middle" class="small">adapter</text>
+  <rect x="1195" y="525" width="135" height="85" rx="11" class="purpleCard"/><text x="1262" y="551" text-anchor="middle" class="label">LiteLLM</text><text x="1262" y="574" text-anchor="middle" class="small">Gateway</text>
+  <rect x="1370" y="525" width="125" height="85" rx="11" class="purpleCard"/><text x="1432" y="551" text-anchor="middle" class="label">Hosted LLMs</text><text x="1432" y="574" text-anchor="middle" class="small">model providers</text>
+  <circle cx="735" cy="525" r="10" fill="url(#tealBadge)"/><path d="M735 519v5m0 0-6 6m6-6 6 6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="735" cy="518" r="1.7" fill="#fff"/><circle cx="729" cy="531" r="1.7" fill="#fff"/><circle cx="741" cy="531" r="1.7" fill="#fff"/>
+  <g transform="translate(61 -14)"><circle cx="864" cy="539" r="9" fill="url(#tealBadge)"/><path d="M859 535h10v8h-10zm2-3h6" fill="none" stroke="#fff" stroke-width="1.2"/></g>
+  <g transform="translate(53 -14)"><circle cx="1044" cy="539" r="9" fill="url(#tealBadge)"/><path d="M1039 539h10m-5-5v10" stroke="#fff" stroke-width="1.3"/></g>
+  <g transform="translate(53 -14)"><circle cx="1209" cy="539" r="9" fill="url(#purpleBadge)"/><path d="M1204 535h10v8h-10z" fill="none" stroke="#fff" stroke-width="1.3"/></g>
+  <circle cx="1432" cy="525" r="12" fill="url(#purpleBadge)" stroke="#fff" stroke-width="1.5"/>
+  <path d="M1425 530h13a3.5 3.5 0 0 0 .4-7c-.7-3.3-5-4.2-6.8-1.4-2.7-.8-5.2 1.2-5.1 4-3.5.5-3.1 4.4-1.5 4.4z" fill="#fff"/>
+  <path d="M1185 473V495H735V525" class="tealLine"/><text x="845" y="493" class="tiny" fill="#ef6548">CACHE MISS</text>
+  <path d="M820 568H850M1000 568H1030M1165 568H1195" class="tealLine"/>
+  <path d="M1330 568H1370" class="purpleBiLine"/>
+  <rect x="900" y="650" width="155" height="50" rx="10" class="tealCard"/><text x="977" y="680" text-anchor="middle" class="label">Parse model JSON</text>
+  <rect x="1090" y="650" width="145" height="50" rx="10" class="tealCard"/><text x="1162" y="680" text-anchor="middle" class="label">Output guardrails</text>
+  <rect x="1270" y="650" width="150" height="50" rx="10" class="tealCard"/><text x="1345" y="671" text-anchor="middle" class="label">Cache valid response</text><text x="1345" y="690" text-anchor="middle" class="tiny">if safe + confident</text>
+  <path d="M1262 610V642H977V650" class="purpleLine"/><rect x="1060" y="616" width="132" height="20" rx="10" fill="#fff" stroke="#b7a2df"/><text x="1126" y="630" text-anchor="middle" class="tiny" style="fill:#6d47b8">MODEL RESPONSE</text>
+  <path d="M1055 675H1090" class="tealLine"/>
+  <path d="M1235 675H1270" class="tealLine"/>
+
+  <!-- Shared API response boundary and explicit return paths -->
+  <rect x="460" y="650" width="170" height="55" rx="12" class="card"/><circle cx="545" cy="650" r="10" fill="url(#tealBadge)"/><path d="M539 646h12v8h-12zm3-3h6" fill="none" stroke="#fff" stroke-width="1.3"/><text x="545" y="677" text-anchor="middle" class="label">FastAPI ChatResponse</text><text x="545" y="696" text-anchor="middle" class="tiny">Pydantic JSON</text>
+  <path d="M1420 675H1450V715H630V688" class="tealLine"/>
+  <path d="M1475 418H1515V635H630V665" class="greenLine"/><text x="1425" y="628" class="tiny" fill="#26964a">CACHE RETURN</text>
+  <path d="M1400 245H1550V744H610V705" class="coralLine"/><rect x="1350" y="722" width="150" height="20" rx="10" fill="#fff" stroke="#ef6548"/><text x="1425" y="736" text-anchor="middle" class="tiny" style="fill:#ef6548">BASELINE RETURN</text>
+  <path d="M460 677H395V287H262V245H228" class="navyLine"/><text x="272" y="279" class="tiny" fill="#143b63">API RESPONSE</text>
+
+  <!-- Configuration zone: deliberately isolated from governance -->
+  <rect x="320" y="760" width="1215" height="90" rx="16" fill="url(#purpleGrad)" stroke="#b7a2df" stroke-width="1.5" filter="url(#cardShadow)"/><rect x="320" y="760" width="8" height="90" rx="4" fill="url(#purpleBadge)"/>
+  <circle cx="353" cy="783" r="14" fill="url(#purpleBadge)"/><path d="M347 778h12m-12 5h12m-12 5h12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><circle cx="351" cy="778" r="2" fill="#fff"/><circle cx="356" cy="783" r="2" fill="#fff"/><circle cx="350" cy="788" r="2" fill="#fff"/><text x="378" y="788" class="tiny" fill="#6d47b8">CONFIGURATION PATH</text>
+  <rect x="500" y="787" width="210" height="45" rx="10" class="purpleCard"/><text x="605" y="815" text-anchor="middle" class="label">LLM Config / Health APIs</text>
+  <rect x="800" y="787" width="210" height="45" rx="10" class="purpleCard"/><text x="905" y="815" text-anchor="middle" class="label">Runtime LLM settings</text>
+  <circle cx="605" cy="787" r="9" fill="url(#purpleBadge)"/><path d="M600 783h10v8h-10zm2-3h6" fill="none" stroke="#fff" stroke-width="1.2"/>
+  <circle cx="905" cy="787" r="9" fill="url(#purpleBadge)"/><path d="M899 783h12m-9 4h6m-4 4h2" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M228 577H270V809H500" class="configLine"/><path d="M710 809H800" class="configLine"/><path d="M1010 809H1262V610" class="configLine"/>
+
+  <!-- Governance zone: no Settings connector -->
+  <rect x="320" y="860" width="1215" height="96" rx="16" fill="url(#purpleGrad)" stroke="#6d47b8" stroke-width="2" filter="url(#cardShadow)"/><rect x="320" y="860" width="8" height="96" rx="4" fill="url(#purpleBadge)"/>
+  <circle cx="352" cy="881" r="14" fill="url(#purpleBadge)"/><path d="M352 871l8 3v6c0 6-8 10-8 10s-8-4-8-10v-6z" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M348 880l3 3 5-6" fill="none" stroke="#fff" stroke-width="1.5"/><text x="377" y="886" class="tiny" fill="#6d47b8">GOVERNANCE TELEMETRY</text>
+  <rect x="500" y="902" width="180" height="42" rx="10" class="purpleCard"/><text x="590" y="928" text-anchor="middle" class="label">PII masking</text>
+  <rect x="760" y="902" width="250" height="42" rx="10" class="purpleCard"/><text x="885" y="928" text-anchor="middle" class="label">SQLite interactions + audit log</text>
+  <rect x="1090" y="902" width="250" height="42" rx="10" class="purpleCard"/><text x="1215" y="928" text-anchor="middle" class="label">Metrics / Governance APIs</text>
+  <rect x="574" y="893" width="32" height="18" rx="9" fill="#fff" stroke="#d8ccec" stroke-width="1"/>
+  <path d="M579 902c3-5.5 7-5.5 11 0s8 5.5 11 0c-3-5.5-7-5.5-11 0s-8 5.5-11 0" fill="none" stroke="url(#purpleBadge)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="885" cy="902" r="9" fill="url(#purpleBadge)"/><ellipse cx="885" cy="898" rx="5" ry="2.5" fill="none" stroke="#fff" stroke-width="1.2"/><path d="M880 898v7c0 3 10 3 10 0v-7m-10 3c0 3 10 3 10 0" fill="none" stroke="#fff" stroke-width="1.2"/>
+  <circle cx="1215" cy="902" r="9" fill="url(#purpleBadge)"/><path d="M1209 907v-5h3v5m2 0v-9h3v9m2 0v-12h3v12" fill="none" stroke="#fff" stroke-width="1.2"/>
+  <path d="M700 720V865H590V902" class="purpleLine"/><text x="712" y="858" class="tiny" fill="#6d47b8">OPTIMIZED EVENTS — MASKED</text><path d="M680 923H760M1010 923H1090" class="purpleLine"/>
+  <path d="M1400 260H1550V952H885V944" class="auditLine"/><text x="1368" y="948" class="tiny" fill="#ef6548">UNMASKED BASELINE AUDIT</text>
+  <path d="M1340 923H1515V965H265V337H228" class="purpleLine"/>
+
+  <!-- Legend -->
+  <rect x="420" y="980" width="760" height="38" rx="12" fill="#fff" stroke="#b5c6d5"/>
+  <rect x="448" y="992" width="30" height="14" rx="3" fill="#ef6548"/><text x="488" y="1004" class="tiny">Baseline</text>
+  <rect x="590" y="992" width="30" height="14" rx="3" fill="#05879a"/><text x="630" y="1004" class="tiny">Optimized</text>
+  <rect x="750" y="992" width="30" height="14" rx="3" fill="#26964a"/><text x="790" y="1004" class="tiny">Cache hit</text>
+  <rect x="900" y="992" width="30" height="14" rx="3" fill="#6d47b8"/><text x="940" y="1004" class="tiny">Config / governance / gateway</text>
+</svg>
