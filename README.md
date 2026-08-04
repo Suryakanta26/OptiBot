@@ -19,7 +19,7 @@ separate, individually measurable layer.
 | 1 | **Model routing** | One expensive model, every query | Rule-based complexity classifier routes simple lookups to a cheap model |
 | 2 | **Prompt engineering** | ~430-word unstructured prompt, sent in full every time | Compressed structured prompt, output contract, 2 few-shot examples, context injected on demand |
 | 3 | **RAG grounding** | None — policy answers come from model priors | Policy corpus chunked on headings, embedded, retrieved and re-ranked |
-| 4 | **Semantic cache** | None | Normalised-query embedding cache, partitioned by resolved facts |
+| 4 | **Exact & semantic cache** | None | Bounded exact-match TTL cache first, then semantic reuse for static policy/FAQ turns |
 | 5 | **Guardrails & PII** | None | Injection detection, output verification against the order DB, PII masking |
 | 6 | **Monitoring & audit** | None | Per-request metrics, append-only audit log, live dashboard |
 
@@ -30,7 +30,11 @@ normalised (`ORD-10042` → `<order_id>`) before embedding, so *"Where is my
 order?"* and *"What's the status of my order?"* share an entry — but the entry
 is also keyed on a hash of the **resolved order IDs and policy sources**. Two
 customers asking the same question about different orders can never collide.
-Without that, a semantic cache is a data-leak generator.
+Without that, a semantic cache is a data-leak generator. The optimized path now
+uses a bounded exact-match TTL cache first, followed by an intent-restricted
+semantic cache for static policy/FAQ turns. Set
+`OPTIBOT_SEMANTIC_CACHE_BACKEND=gptcache` to use GPTCache (SQLite + FAISS in the
+current process); the default `local` backend has no additional service.
 
 **The cache threshold is calibrated, not guessed.** `scripts/calibrate_cache.py`
 scores a labelled pair set including deliberate near-misses (*"how long does
